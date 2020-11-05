@@ -11,7 +11,7 @@ jobs:
           name: Running tests 
           command: |
             virtualenv venv
-            . venv/Scripts/activate
+            . venv/bin/activate
             pip install --upgrade pip
             pip install -r packages/regression_model/requirements.txt
             chmod +x ./scripts/fetch_kaggle_dataset.sh
