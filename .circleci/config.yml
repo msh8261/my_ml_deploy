@@ -1,48 +1,22 @@
 version: 2
 
-defaults: &defaults
-  docker:
-    - image: circleci/python:3.8
-  working_directory: ~/project
-
-prepare_venv: &prepare_venv
-  run:
-    name: Create venv
-    command: |
-      python3 -m venv venv
-      source venv/bin/activate
-      pip install --upgrade pip
-
-prepare_tox: &prepare_tox
-  run:
-    name: Install tox
-    command: |
-      sudo pip install --upgrade pip
-      pip install --user tox
-
-fetch_data: &fetch_data
-  run:
-    name: Set script permissions and fetch data
-    command: |
-      source venv/bin/activate
-      chmod +x ./scripts/fetch_kaggle_dataset.sh
-      ./scripts/fetch_kaggle_dataset.sh
-
-
 jobs:
-  test_regression_model_py38:
+  test_regression_model:
     docker:
       - image: circleci/python:3.8.0
-    working_directory: ~/project/packages/regression_model
+    working_directory: ~/project
     steps:
       - checkout:
-          path: ~/project
       - run:
-          name: Run tests with Python 3.8
+          name: Running tests 
           command: |
+            virtualenv venv
+            . env/Scripts/activate
             pip install --upgrade pip
-            pip install --user tox
-            tox -e py38
+            pip install -r packages/regression_model/requirements.txt
+            chmod +x ./scripts/fetch_kaggle_dataset.sh
+            ./scripts/fetch_kaggle_dataset.sh
+            py.test -vv packages/regression_model/tests
 
   
 
